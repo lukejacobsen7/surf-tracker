@@ -25,7 +25,7 @@ ALERTABLE_CONDITIONS = {"Fair", "Good", "Epic"}   # Alert if condition in this s
 # ── Credentials (set as GitHub Actions secrets) ───────────────────────────────
 GMAIL_USER         = os.environ.get("GMAIL_USER", "lj46ktm@gmail.com")
 GMAIL_APP_PASSWORD = "".join(c for c in os.environ.get("GMAIL_APP_PASSWORD", "") if c.isalnum())
-ATT_SMS_EMAIL      = "3864140000@txt.att.net"
+ATT_SMS_EMAIL      = "3864140000@mms.att.net"
 
 
 # ── API helpers ───────────────────────────────────────────────────────────────
