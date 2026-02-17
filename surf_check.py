@@ -2,12 +2,10 @@
 """
 Surf Tracker - New Smyrna Beach
 Checks morning surf conditions via Open-Meteo (free, no API key needed)
-and sends an SMS alert via AT&T email-to-SMS if conditions are favorable.
+and sends a Telegram message if conditions are favorable.
 """
 
 import requests
-import smtplib
-from email.mime.text import MIMEText
 from datetime import datetime
 import os
 import sys
@@ -23,9 +21,8 @@ MIN_WAVE_HEIGHT_FT = 2.0                          # Alert if >= 2 ft
 ALERTABLE_CONDITIONS = {"Fair", "Good", "Epic"}   # Alert if condition in this set
 
 # ── Credentials (set as GitHub Actions secrets) ───────────────────────────────
-GMAIL_USER         = os.environ.get("GMAIL_USER", "lj46ktm@gmail.com")
-GMAIL_APP_PASSWORD = "".join(c for c in os.environ.get("GMAIL_APP_PASSWORD", "") if c.isalnum())
-ATT_SMS_EMAIL      = "3864140000@mms.att.net"
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_CHAT_ID   = os.environ.get("TELEGRAM_CHAT_ID", "")
 
 
 # ── API helpers ───────────────────────────────────────────────────────────────
@@ -139,19 +136,13 @@ def rate_conditions(wave_height_ft, wave_period_s, wind_speed_mph, wind_dir_deg)
         return "Poor"
 
 
-# ── SMS via Gmail → AT&T email-to-SMS ────────────────────────────────────────
+# ── Telegram alert ───────────────────────────────────────────────────────────
 
-def send_sms(message):
-    msg = MIMEText(message)
-    msg["From"] = GMAIL_USER
-    msg["To"] = ATT_SMS_EMAIL
-    msg["Subject"] = ""  # Keep blank; body is the SMS content
-
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
-        server.sendmail(GMAIL_USER, ATT_SMS_EMAIL, msg.as_string())
-
-    print(f"SMS sent to {ATT_SMS_EMAIL}")
+def send_telegram(message):
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    resp = requests.post(url, json={"chat_id": TELEGRAM_CHAT_ID, "text": message}, timeout=30)
+    resp.raise_for_status()
+    print(f"Telegram message sent.")
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -197,13 +188,13 @@ def main():
             f"Conditions: {condition}\n"
             f"Wind: {wind_speed_mph:.0f} mph {wind_cardinal} (gusts {wind_gusts_mph:.0f})"
         )
-        print(f"\nConditions qualify! Sending SMS alert...")
+        print(f"\nConditions qualify! Sending Telegram alert...")
         print(f"---\n{message}\n---")
 
-        if not GMAIL_APP_PASSWORD:
-            print("WARNING: GMAIL_APP_PASSWORD not set. Skipping SMS.")
+        if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+            print("WARNING: Telegram credentials not set. Skipping alert.")
         else:
-            send_sms(message)
+            send_telegram(message)
     else:
         print(
             f"\nNo alert — need >= {MIN_WAVE_HEIGHT_FT} ft + {'/'.join(ALERTABLE_CONDITIONS)}. "
