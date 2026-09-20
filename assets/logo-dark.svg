@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="714" height="180" viewBox="0 0 714 180" role="img" aria-label="surf-tracker">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1113"/>
+      <stop offset="1" stop-color="#1b2126"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(10,10)">
+    <rect width="160" height="160" rx="36" fill="url(#g)"  stroke="#262a2e" stroke-width="2"/>
+
+    <path d="M20 100 H140" stroke="#FFB74D" stroke-width="4" stroke-linecap="round" stroke-dasharray="9 9" opacity="0.9"/>
+    <path d="M20 118 C 46 118, 50 40, 86 40 C 118 40, 120 84, 140 84"
+          fill="none" stroke="#2BD9FF" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="86" cy="40" r="9" fill="#2BD9FF"/>
+  </g>
+  <text x="200" y="92" font-family="-apple-system, 'SF Pro Display', 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif" font-size="66" font-weight="700" fill="#ECECEC" letter-spacing="-2">surf<tspan fill="#2BD9FF">tracker</tspan></text>
+  <text x="203" y="134" font-family="-apple-system, 'SF Pro Text', 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif" font-size="22" fill="#9A9A9A">only pings you when it is worth paddling out</text>
+</svg>
